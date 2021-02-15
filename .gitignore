@@ -1,0 +1,7 @@
+lib
+node_modules
+.bsb.lock
+.merlin
+.vscode
+src/**/*.bs.js
+tests/**/*.bs.js

@@ -1,0 +1,35 @@
+{
+  "name": "re-code",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "tests",
+      "dev": true,
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    },
+    {
+      "module": "commonjs",
+      "in-source": false
+    }
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bs-dependencies": [],
+  "bs-dev-dependencies": [],
+  "ppx-flags": [],
+  "refmt": 3,
+  "warnings": {
+    "number": "-48-30",
+    "error": "+A+8+11+12+16+26+27+31+32+33+34+35+39+44+45+101+102+104+105"
+  },
+  "bsc-flags": ["-bs-super-errors"]
+}
