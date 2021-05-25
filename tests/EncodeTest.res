@@ -51,7 +51,7 @@ assert (
 
 assert (Js.Json.stringify(Encode.string("foo")) == `"foo"`)
 assert (Js.Json.stringify(Encode.int(42)) == "42")
-assert (Js.Json.stringify(Encode.float(42.5)) == "42.5")
+assert (Js.Json.stringify(Encode.float_(42.5)) == "42.5")
 assert (Js.Json.stringify(Encode.bool(false)) == "false")
 
 assert (Js.Json.stringify(Encode.list(Encode.string, list{"foo", "bar"})) == `["foo","bar"]`)

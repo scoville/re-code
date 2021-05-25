@@ -12,7 +12,7 @@ let string = Js.Json.string
 let int = x => Js.Json.number(Belt.Float.fromInt(x))
 
 @ocaml.doc("Takes a float value and returns a `Js.Json.t`.")
-let float = Js.Json.number
+let float_ = Js.Json.number
 
 @ocaml.doc("Takes a bool value and returns a `Js.Json.t`.")
 let bool = Js.Json.boolean

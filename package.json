@@ -9,6 +9,6 @@
     "test": "yarn build && node lib/js/tests/DecodeTest.bs.js && node lib/js/tests/EncodeTest.bs.js && echo All tests passed"
   },
   "devDependencies": {
-    "bs-platform": "^9.0.0"
+    "rescript": "^9.1.2"
   }
 }
