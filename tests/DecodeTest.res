@@ -283,5 +283,3 @@ assert (
 )
 
 assert ("\"foobar\""->decodeString(string->String.matches(%re("/oo/"))) == Ok("foobar"))
-
-Js.log("Tests passed")

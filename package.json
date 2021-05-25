@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "bsb -clean-world && rm -fr lib",
     "build": "bsb -make-world",
-    "test": "yarn build && node lib/js/tests/Test.bs.js"
+    "test": "yarn build && node lib/js/tests/DecodeTest.bs.js && node lib/js/tests/EncodeTest.bs.js && echo All tests passed"
   },
   "devDependencies": {
     "bs-platform": "^9.0.0"
