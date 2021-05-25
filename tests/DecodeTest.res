@@ -131,30 +131,34 @@ assert ("1.0"->decodeString(float_) == Ok(1.0))
 assert ("1.1"->decodeString(float_) == Ok(1.1))
 assert ("true"->decodeString(float_) == Error(TypeError("Float expected, got true")))
 
-assert ("\"foo\""->decodeString(string) == Ok("foo"))
+assert (`"foo"`->decodeString(string) == Ok("foo"))
 assert ("1"->decodeString(string) == Error(TypeError("String expected, got 1")))
 
 assert ("null"->decodeString(null(1)) == Ok(1))
 assert ("null"->decodeString(null(true)) == Ok(true))
 assert ("1"->decodeString(null(true)) == Error(TypeError("null value expected got 1")))
 
-assert ("{ \"x\": 42 }"->decodeString(field("x", int)) == Ok(42))
-assert ("{ \"x\": 42, \"y\": 43 }"->decodeString(field("x", int)) == Ok(42))
 assert (
-  "{ \"x\": true }"->decodeString(field("x", int)) == Error(TypeError("Integer expected, got true"))
-)
-assert (
-  "{ \"y\": 42 }"->decodeString(field("x", int)) == Error(TypeError("Object has no attribute x"))
+  `{ "x": 42 }`->decodeString(field("x", raw))->Belt.Result.map(Js.Json.stringify) == Ok("42")
 )
 
-assert ("[\"foo\", \"bar\", \"baz\"]"->decodeString(index(0, string)) == Ok("foo"))
-assert ("[\"foo\", \"bar\", \"baz\"]"->decodeString(index(2, string)) == Ok("baz"))
+assert (`{ "x": 42 }`->decodeString(field("x", int)) == Ok(42))
+assert (`{ "x": 42, "y": 43 }`->decodeString(field("x", int)) == Ok(42))
 assert (
-  "[\"foo\", \"bar\", \"baz\"]"->decodeString(index(3, string)) ==
+  `{ "x": true }`->decodeString(field("x", int)) == Error(TypeError("Integer expected, got true"))
+)
+assert (
+  `{ "y": 42 }`->decodeString(field("x", int)) == Error(TypeError("Object has no attribute x"))
+)
+
+assert (`["foo", "bar", "baz"]`->decodeString(index(0, string)) == Ok("foo"))
+assert (`["foo", "bar", "baz"]`->decodeString(index(2, string)) == Ok("baz"))
+assert (
+  `["foo", "bar", "baz"]`->decodeString(index(3, string)) ==
     Error(TypeError("Index 3 out of bound"))
 )
 
-assert ("\"world\""->decodeString(string->map(value => `Hello ${value}`)) == Ok("Hello world"))
+assert (`"world"`->decodeString(string->map(value => `Hello ${value}`)) == Ok("Hello world"))
 assert (
   "true"->decodeString(string->map(value => `Hello ${value}`)) ==
     Error(TypeError("String expected, got true"))
@@ -180,9 +184,9 @@ let roleDecoder = string->flatMap(value =>
   }
 )
 
-assert ("\"admin\""->decodeString(roleDecoder) == Ok(Admin))
-assert ("\"user\""->decodeString(roleDecoder) == Ok(User))
-assert ("\"unknown\""->decodeString(roleDecoder) == Error(TypeError("Invalid role: unknown")))
+assert (`"admin"`->decodeString(roleDecoder) == Ok(Admin))
+assert (`"user"`->decodeString(roleDecoder) == Ok(User))
+assert (`"unknown"`->decodeString(roleDecoder) == Error(TypeError("Invalid role: unknown")))
 
 type user = {age: int, name: string, isLoggedIn: bool}
 
@@ -196,32 +200,30 @@ let userDecoder =
   ->apply(field("isLoggedIn", bool))
 
 assert (
-  "{ \"age\": 20, \"name\": \"foo\", \"isLoggedIn\": false }"->decodeString(userDecoder) ==
+  `{ "age": 20, "name": "foo", "isLoggedIn": false }`->decodeString(userDecoder) ==
     Ok({age: 20, name: "foo", isLoggedIn: false})
 )
 
 assert (
-  "[1, \"foo\", 3]"->decodeString(
+  `[1, "foo", 3]`->decodeString(
     array(oneOf([string->map(value => #string(value)), int->map(value => #int(value))])),
   ) == Ok([#int(1), #string("foo"), #int(3)])
 )
 
 assert ("1"->decodeString(nullable(int)) == Ok(Some(1)))
 assert ("null"->decodeString(nullable(int)) == Ok(None))
-assert (
-  "\"foo\""->decodeString(nullable(int)) == Error(TypeError("oneOf found no matching decoder"))
-)
+assert (`"foo"`->decodeString(nullable(int)) == Error(TypeError("oneOf found no matching decoder")))
 
-assert ("{ \"x\": 42, \"y\": 43 }"->decodeString(maybe(field("x", int))) == Ok(Some(42)))
-assert ("{ \"y\": 43 }"->decodeString(maybe(field("x", int))) == Ok(None))
+assert (`{ "x": 42, "y": 43 }`->decodeString(maybe(field("x", int))) == Ok(Some(42)))
+assert (`{ "y": 43 }`->decodeString(maybe(field("x", int))) == Ok(None))
 assert ("true"->decodeString(maybe(field("x", int))) == Ok(None))
 
-assert ("[1, 2, 3]"->decodeString(array(int)) == Ok([1, 2, 3]))
-assert ("[1, 2, 3]"->decodeString(array(string)) == Error(TypeError("String expected, got 1")))
+assert (`[1, 2, 3]`->decodeString(array(int)) == Ok([1, 2, 3]))
+assert (`[1, 2, 3]`->decodeString(array(string)) == Error(TypeError("String expected, got 1")))
 assert ("1"->decodeString(array(int)) == Error(TypeError("Array expected got 1")))
 
-assert ("[1, 2, 3]"->decodeString(list(int)) == Ok(list{1, 2, 3}))
-assert ("[1, 2, 3]"->decodeString(list(string)) == Error(TypeError("String expected, got 1")))
+assert (`[1, 2, 3]`->decodeString(list(int)) == Ok(list{1, 2, 3}))
+assert (`[1, 2, 3]`->decodeString(list(string)) == Error(TypeError("String expected, got 1")))
 assert ("1"->decodeString(list(int)) == Error(TypeError("List expected got 1")))
 
 type rec comment = {message: string, responses: responses}
@@ -237,7 +239,7 @@ let rec commentDecoder = lazy (
 )
 
 assert (
-  "{\"message\": \"Hello\", \"responses\": [{\"message\": \"Hello\", \"responses\": [{\"message\": \"Hello\", \"responses\": [{\"message\": \"Hello\", \"responses\": [{\"message\": \"Hello\", \"responses\": [{\"message\": \"Hello\", \"responses\": []}]}]}]}]}]}"
+  `{"message": "Hello", "responses": [{"message": "Hello", "responses": [{"message": "Hello", "responses": [{"message": "Hello", "responses": [{"message": "Hello", "responses": [{"message": "Hello", "responses": []}]}]}]}]}]}`
   ->decodeString(Lazy.force(commentDecoder))
   ->Belt.Result.isOk
 )
@@ -245,7 +247,7 @@ assert (
 open DecodeExtra
 
 assert (
-  "\"2001-02-15T08:58:23.041Z\""->decodeString(Date.iso) ==
+  `"2001-02-15T08:58:23.041Z"`->decodeString(Date.iso) ==
     Ok(Js.Date.fromString("2001-02-15T08:58:23.041Z"))
 )
 
@@ -282,4 +284,4 @@ assert (
     Error(TypeError("Value should be above 10!"))
 )
 
-assert ("\"foobar\""->decodeString(string->String.matches(%re("/oo/"))) == Ok("foobar"))
+assert (`"foobar"`->decodeString(string->String.matches(%re("/oo/"))) == Ok("foobar"))

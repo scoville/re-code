@@ -123,6 +123,10 @@ let null = (value, json) =>
     )
   }
 
+@ocaml.doc("Doesn't do anything to the provided `Js.Json.t` value.
+Can be useful when you need to decode only some parts of a bigger object.")
+let raw: t<Js.Json.t, _> = json => Ok(json)
+
 // Object Primitives
 
 @ocaml.doc("Will try to access the specified key in a JSON object.

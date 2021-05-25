@@ -49,34 +49,34 @@ assert (
 }`
 )
 
-assert (Js.Json.stringify(Encode.string("foo")) == `"foo"`)
-assert (Js.Json.stringify(Encode.int(42)) == "42")
-assert (Js.Json.stringify(Encode.float_(42.5)) == "42.5")
-assert (Js.Json.stringify(Encode.bool(false)) == "false")
+open Encode
 
-assert (Js.Json.stringify(Encode.list(Encode.string, list{"foo", "bar"})) == `["foo","bar"]`)
-assert (Js.Json.stringify(Encode.array(Encode.string, ["foo", "bar"])) == `["foo","bar"]`)
+assert (Js.Json.stringify(string("foo")) == `"foo"`)
+assert (Js.Json.stringify(int(42)) == "42")
+assert (Js.Json.stringify(float_(42.5)) == "42.5")
+assert (Js.Json.stringify(bool(false)) == "false")
 
-assert (Js.Json.stringify(Encode.maybe(Encode.string, None)) == "null")
-assert (Js.Json.stringify(Encode.maybe(Encode.string, Some("foo"))) == `"foo"`)
-assert (Js.Json.stringify(Encode.result(Encode.string, Error("Will get discarded"))) == "null")
-assert (Js.Json.stringify(Encode.result(Encode.string, Ok("foo"))) == `"foo"`)
+assert (Js.Json.stringify(list(string, list{"foo", "bar"})) == `["foo","bar"]`)
+assert (Js.Json.stringify(array(string, ["foo", "bar"])) == `["foo","bar"]`)
+
+assert (Js.Json.stringify(maybe(string, None)) == "null")
+assert (Js.Json.stringify(maybe(string, Some("foo"))) == `"foo"`)
+assert (Js.Json.stringify(result(string, Error("Will get discarded"))) == "null")
+assert (Js.Json.stringify(result(string, Ok("foo"))) == `"foo"`)
 
 assert (
   Js.Json.stringify(
-    Encode.date(Js.Date.fromString("2001-02-15T08:58:23.041Z")),
+    date(Js.Date.fromString("2001-02-15T08:58:23.041Z")),
   ) == `"2001-02-15T08:58:23.041Z"`
 )
 
 assert (
-  Js.Json.stringify(
-    Encode.dict(Encode.int, Js.Dict.fromArray([("foo", 1), ("bar", 2)])),
-  ) == `{"foo":1,"bar":2}`
+  Js.Json.stringify(dict(int, Js.Dict.fromArray([("foo", 1), ("bar", 2)]))) == `{"foo":1,"bar":2}`
 )
 
 // Order for Maps is not guaranteed
 assert (
   Js.Json.stringify(
-    Encode.stringMap(Encode.int, Belt.Map.String.fromArray([("foo", 1), ("bar", 2)])),
+    stringMap(int, Belt.Map.String.fromArray([("foo", 1), ("bar", 2)])),
   ) == `{"bar":2,"foo":1}`
 )
