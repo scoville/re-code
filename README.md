@@ -7,7 +7,7 @@ The library is well documented and well tested. Using VS Code with the official 
 
 ![Screenshot 1](assets/screenshot1.png)
 
-## A simple example
+## A simple example (Decoder)
 
 Let's pretend we need to parse an incoming JSON that should contain a user object with the following requirements:
 
@@ -75,6 +75,45 @@ switch payload->Decode.decodeString(User.decoder) {
 | Error(ParseError) => Js.log("Humm, the JSON was invalid")
 | Error(TypeError(error)) => Js.log(`The JSON was valid, but not the value it contained: ${error}`)
 }
+```
+
+## A simple example (Encoder)
+
+We can also turn complex values into Json:
+
+```rescript
+// Reusing the previous User module and type only
+module User = {
+  type t = {
+    age: int,
+    name: string,
+    email: option<string>,
+    loggedIn: bool,
+    phoneNumber: option<string>,
+    hobbies: array<string>,
+    dateOfBirth: Js.Date.t,
+  }
+}
+
+let userEncoder = (user: User.t) => {
+  open Encode
+
+  object([
+    ("age", int(user.age)),
+    ("name", string(user.name)),
+    ("email", maybe(string, user.email)),
+    ("loggedIn", bool(user.loggedIn)),
+    ("phoneNumber", maybe(string, user.phoneNumber)),
+    ("hobbies", array(string, user.hobbies)),
+    ("dateOfBirth", date(user.dateOfBirth)),
+  ])
+}
+
+// We assume a `myUser` variable exists and has type `User.t`
+let json = userEncoder(myUser)
+
+// Let's display our newly created json
+Js.log(Js.Json.stringify(json))
 ```
 
 ## See more

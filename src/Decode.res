@@ -1,3 +1,8 @@
+// Type
+
+@ocaml.doc("The underlying type of all the decoders.")
+type t<'data, 'error> = Js.Json.t => result<'data, 'error>
+
 // Primitives
 
 @ocaml.doc("Takes a value and always return it, ignores the provided JSON
@@ -9,7 +14,7 @@ Example:
 \"invalid json\"->decodeString(pure(42)) == Error(ParseError)
 ```
 ")
-let pure = (value, _json: Js.Json.t) => Ok(value)
+let pure = (value): t<_, _> => _json => Ok(value)
 
 @ocaml.doc("Makes the decoder fail, ignoring the provided JSON.
 This is very convenient when you need to parse variant types for instance.
@@ -22,7 +27,7 @@ Example:
 \"invalid json\"->decodeString(throw(\"An error occured\")) == Error(ParseError)
 ```
 ")
-let throw = (message, _json: Js.Json.t) => Error(message)
+let throw = (message): t<_, _> => _json => Error(message)
 
 @ocaml.doc("Decodes a JSON boolean into a bool.
 
@@ -117,6 +122,10 @@ let null = (value, json) =>
         ->Belt.Option.getWithDefault("unknown")}`,
     )
   }
+
+@ocaml.doc("Doesn't do anything to the provided `Js.Json.t` value.
+Can be useful when you need to decode only some parts of a bigger object.")
+let raw: t<Js.Json.t, _> = json => Ok(json)
 
 // Object Primitives
 
@@ -381,7 +390,7 @@ type error = ParseError | TypeError(string)
 
 Returns an `error` when something goes wrong.
 ")
-let decodeJson = (json: Js.Json.t, decoder) => {
+let decodeJson = (json, decoder: t<_, _>) => {
   switch decoder(json) {
   | Ok(_) as ok => ok
   | Error(error) => Error(TypeError(error))
