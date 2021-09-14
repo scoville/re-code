@@ -4,11 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "clean": "bsb -clean-world && rm -fr lib",
-    "build": "bsb -make-world",
+    "clean": "rescript clean",
+    "build": "rescript build",
     "test": "yarn build && node lib/js/tests/DecodeTest.bs.js && node lib/js/tests/EncodeTest.bs.js && echo All tests passed"
   },
   "devDependencies": {
-    "rescript": "^9.1.2"
+    "rescript": "^9.1.4"
   }
 }
